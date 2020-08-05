@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="index.css"> 
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;700&display=swap" rel="stylesheet">
   <title>Document</title>
+  <script src="Chart.js"></script>
 </head>
 <body bgcolor="#1c1c1c">
   <script>
@@ -14,8 +15,12 @@
       var url = window.location.href
       var newUrl =url.split("?")
       console.log[newUrl[1]]
+      const queryString = window.location.search;
+      console.log(queryString);
+      const urlParams = new URLSearchParams(queryString);
+      const city = urlParams.get('city')
 function weatherBallon( cityID ) {
-  fetch('https://api.openweathermap.org/data/2.5/weather?id=' + cityID+ '&appid=' + key)  
+  fetch('https://api.openweathermap.org/data/2.5/weather?q=' + cityID+ '&appid=' + key)  
   .then(function(resp) { return resp.json() }) // Convert data to json
   .then(function(data) {
     drawWeather(data);
@@ -24,7 +29,21 @@ function weatherBallon( cityID ) {
     // catch any errors
   });
 }
+function forecast(d ){
+    fetch('https://api.openweathermap.org/data/2.5/forecast?q=' + cityID+ '&appid=' + key)  
+  .then(function(resp) { return resp.json() }) // Convert data to json
+  .then(function(data) {
+    drawForecast(data)
+  })
+  .catch(function() {
+    // catch any errors
+  });
+}
+function drawForecast(d){
+  console.log(d)
+}
 function drawWeather( d ) {
+  console.log(d.weather[0])
   var celcius = Math.round(parseFloat(d.main.temp)-273.15);
   var fahrenheit = Math.round(((parseFloat(d.main.temp)-273.15)*1.8)+32);
   var description = d.weather[0].description; 
@@ -40,13 +59,57 @@ function drawWeather( d ) {
     document.getElementById('description').innerHTML = '☀️' + '  Clear';
   } else if (description == 'few clouds'){
     document.getElementById('description').innerHTML = '🌤️' + '  Few Clouds';
+  } else if (description == 'light rain') {
+    document.getElementById('description').innerHTML = '🌦️' + '  Light Rain';
   }
 }
 window.onload = function() {
-  weatherBallon(2747891);
+  weatherBallon(city);
 }
   </script>
-  <div id="rcorners1" class="transparent"><center><h1 id="color">Weather.</h1></center>
+ <div id="rcorners1" class="transparent"><center><h1 id="color">Weather.</h1></center>
+<canvas id="myChart" width="400" height="370"></canvas>
+<script>
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun' ],
+        datasets: [{
+            label: '° C',
+            data: [12, 19, 3, 5, 2, 3, 5],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 136, 57, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(255, 136, 57, 1)' 
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+</script>
   <br>
   <div id="weather">
     <p id="location"></p>
