@@ -44,7 +44,7 @@
             .openPopup();
             console.log(crd.longitude, crd.latitude)
             console.log('api.openweathermap.org/data/2.5/weather?lat=' + crd.latitude+ '&lon='+ crd.longitude +'&appid=' + api)
-            fetch('api.openweathermap.org/data/2.5/weather?lat=' + crd.latitude+ '&lon='+ crd.longitude +'&appid=' + api)
+            fetch('https://api.openweathermap.org/data/2.5/weather?lat=' + crd.latitude+ '&lon='+ crd.longitude +'&appid=' + api)
             .then(function(resp) { 
             let res = resp.json() 
             console.log(res.main.temp)
